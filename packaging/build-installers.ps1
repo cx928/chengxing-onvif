@@ -12,7 +12,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Version = "1.0.0",
+    [string]$Version = "1.0.1",
     [string]$PythonVersion = "3.12.10",
     [string]$FFmpegDir = "",
     [string]$MediaMTXExe = "",

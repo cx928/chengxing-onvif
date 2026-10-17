@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-CURRENT_VERSION = "1.0.0"
-VERSION_TUPLE = (1, 0, 0)
-BUILD = "2026.06"
+CURRENT_VERSION = "1.0.1"
+VERSION_TUPLE = (1, 0, 1)
+BUILD = "2026.10"
 CODENAME = "启明"
 
 # 配置结构版本，用于数据迁移

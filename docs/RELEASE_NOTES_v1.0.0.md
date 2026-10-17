@@ -1,5 +1,8 @@
 # 程星 ONVIF v1.0.0
 
+> **注意**：v1.0.0 存在多实例抢占端口导致登录串台 / MediaMTX 反复启动的问题，
+> 建议使用 **[v1.0.1](https://github.com/cx928/chengxing-onvif/releases/tag/v1.0.1)**。
+
 把任意 RTSP 摄像头变成支持**多模型 AI 检测**的 ONVIF 虚拟摄像机，检测框实时叠加进视频流，并以**水星安防（MERCURY）设备身份**向录像机上报检测事件。
 
 ## 下载

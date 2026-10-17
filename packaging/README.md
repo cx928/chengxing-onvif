@@ -33,7 +33,7 @@ powershell -ExecutionPolicy Bypass -File .\packaging\build-installers.ps1
 
 | 参数 | 默认 | 说明 |
 | --- | --- | --- |
-| `-Version` | `1.0.0` | 包版本号 |
+| `-Version` | `1.0.1` | 包版本号 |
 | `-PythonVersion` | `3.12.10` | 嵌入式 Python 版本 |
 | `-PipIndex` | 清华镜像 | pip 源，可改为官方或其他镜像 |
 | `-NoMsi` / `-NoZip` | 否 | 只构建其中一种 |
@@ -55,14 +55,14 @@ powershell -ExecutionPolicy Bypass -File .\packaging\build-installers.ps1
 ### 静默安装 / 卸载
 
 ```powershell
-msiexec /i ChengXing-ONVIF-1.0.0-x64.msi /qn
-msiexec /x ChengXing-ONVIF-1.0.0-x64.msi /qn
+msiexec /i ChengXing-ONVIF-1.0.1-x64.msi /qn
+msiexec /x ChengXing-ONVIF-1.0.1-x64.msi /qn
 ```
 
 ### 自定义安装目录
 
 ```powershell
-msiexec /i ChengXing-ONVIF-1.0.0-x64.msi INSTALLDIR="D:\Apps\ChengXing ONVIF" /qn
+msiexec /i ChengXing-ONVIF-1.0.1-x64.msi INSTALLDIR="D:\Apps\ChengXing ONVIF" /qn
 ```
 
 ## 便携版说明
@@ -79,3 +79,4 @@ packaging/
   msi/Product.wxs          MSI 定义（目录、快捷方式、自启、ARP）
   msi/license.rtf          安装向导中的许可页
 ```
+

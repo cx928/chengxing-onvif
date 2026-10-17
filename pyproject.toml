@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cxonvif"
-version = "1.0.0"
+version = "1.0.1"
 description = "程星 ONVIF —— 多模型 AI 检测 / ONVIF 虚拟摄像机 / 硬件加速"
 readme = "README.md"
 requires-python = ">=3.10"
