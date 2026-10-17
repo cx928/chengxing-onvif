@@ -64,6 +64,19 @@ def _write_launcher() -> str:
     return str(LAUNCHER)
 
 
+def _remove_login_run_key() -> None:
+    """移除安装版写入的登录自启注册表项，避免与计划任务重复启动。"""
+    if not IS_WINDOWS:
+        return
+    try:
+        run_command(
+            ["reg", "delete", r"HKLM\Software\Microsoft\Windows\CurrentVersion\Run", "/v", SERVICE_NAME, "/f"],
+            timeout=15,
+        )
+    except Exception:
+        pass
+
+
 def _startup_dir() -> Path:
     return Path(os.environ.get("APPDATA", str(Path.home()))) / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "Startup"
 
@@ -94,6 +107,7 @@ def windows_install(*, mode: str = "auto") -> tuple[bool, str]:
             timeout=30,
         )
         if completed.returncode == 0:
+            _remove_login_run_key()
             info(f"已创建开机计划任务 {SERVICE_NAME}", "service")
             return True, "已安装开机自启（系统计划任务，SYSTEM 静默启动）"
         warn(f"计划任务创建失败：{completed.stderr}", "service")
@@ -105,6 +119,7 @@ def windows_install(*, mode: str = "auto") -> tuple[bool, str]:
         startup.mkdir(parents=True, exist_ok=True)
         target = startup / f"{SERVICE_NAME}.vbs"
         target.write_text(Path(launcher).read_text(encoding="utf-8"), encoding="utf-8")
+        _remove_login_run_key()
         return True, "已加入当前用户启动文件夹（登录后静默启动；如需开机启动请以管理员身份安装）"
     except OSError as exc:
         return False, f"安装自启失败：{exc}"
@@ -115,6 +130,7 @@ def windows_uninstall() -> tuple[bool, str]:
     if _task_exists():
         completed = run_command(["schtasks", "/Delete", "/F", "/TN", SERVICE_NAME], timeout=20)
         messages.append("计划任务已删除" if completed.returncode == 0 else "计划任务删除失败")
+    _remove_login_run_key()
     target = _startup_dir() / f"{SERVICE_NAME}.vbs"
     if target.exists():
         try:

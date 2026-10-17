@@ -2,12 +2,17 @@
 
 from __future__ import annotations
 
+import json
+import os
 import signal
 import sys
 import threading
 import time
+import urllib.request
 import webbrowser
 from pathlib import Path
+
+from werkzeug.serving import ThreadedWSGIServer
 
 from ..api import create_app
 from ..brand import BRAND_ZH, GITHUB_URL
@@ -18,6 +23,30 @@ from ..version import CURRENT_VERSION, version_string
 from .manager import CameraManager
 
 WEB_DIR = PROJECT_ROOT / "web"
+
+
+class _EngineServer(ThreadedWSGIServer):
+    """Windows 下禁止 SO_REUSEADDR，防止多个引擎实例同时占用同一端口。"""
+
+    allow_reuse_address = os.name != "nt"
+    daemon_threads = True
+
+
+def _existing_instance(port: int) -> dict | None:
+    """检测同一端口上是否已有程星 ONVIF 实例在运行。"""
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/v2/health", timeout=1.5) as response:
+            if response.status != 200:
+                return None
+            payload = json.loads(response.read().decode("utf-8", "ignore") or "{}")
+            if payload.get("status") == "ok" and (
+                "程星" in str(payload.get("brand", "")) or "ChengXing" in str(payload.get("brand", ""))
+            ):
+                return payload
+    except Exception:
+        return None
+    return None
+
 
 
 def _write_pid() -> None:
@@ -38,14 +67,27 @@ def run_engine(
     port: int | None = None,
     open_browser: bool | None = None,
 ) -> int:
-    from werkzeug.serving import make_server
-
     store = store or ConfigStore()
     settings = store.config.settings
     host = host or str(settings.get("bind") or "0.0.0.0")
     port = int(port or settings.get("webPort") or 5552)
     if open_browser is None:
         open_browser = bool(settings.get("openBrowser", False))
+
+    # 单实例保护：端口上已有程星 ONVIF 时直接复用，避免多实例抢占端口与会话串台
+    if not os.environ.get("CXONVIF_ALLOW_MULTI"):
+        existing = _existing_instance(port)
+        if existing:
+            url = f"http://127.0.0.1:{port}"
+            message = f"检测到程星 ONVIF 已在运行（{url}），不再启动新实例"
+            info(message, "service")
+            print(message)
+            if open_browser:
+                try:
+                    webbrowser.open(url)
+                except Exception:
+                    pass
+            return 0
 
     shutdown = threading.Event()
 
@@ -76,8 +118,7 @@ def run_engine(
 
             app = create_app(manager, web_dir=WEB_DIR)
             try:
-                server = make_server(host, port, app, threaded=True)
-                server.daemon_threads = True
+                server = _EngineServer(host, port, app)
             except OSError as exc:
                 warn(f"Web 端口 {port} 启动失败：{exc}", "service")
                 manager.stop()

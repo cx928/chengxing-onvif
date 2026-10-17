@@ -19,7 +19,7 @@ from ..config import AppConfig, CameraConfig
 from ..hw.ffmpeg import resolve_ffmpeg
 from ..logbus import error, info, warn
 from ..paths import HOME, LAYOUT, find_asset
-from ..util import popen_hidden, port_free, read_json, run_command
+from ..util import popen_hidden, port_free, port_owner_pid, read_json, run_command
 
 BINARY_NAME = "mediamtx.exe" if os.name == "nt" else "mediamtx"
 RELEASE_API = "https://api.github.com/repos/bluenviron/mediamtx/releases/latest"
@@ -268,7 +268,14 @@ class MediaMTXManager:
                 self.last_error = "缺少 MediaMTX 可执行文件（可设置 mediamtxPath 或联网自动下载）"
                 return False, self.last_error
             if not port_free(self.rtsp_port):
-                self.last_error = f"RTSP 端口 {self.rtsp_port} 已被占用"
+                owner = port_owner_pid(self.rtsp_port)
+                suffix = f"（进程 {owner}）" if owner else ""
+                self.last_error = f"RTSP 端口 {self.rtsp_port} 已被占用{suffix}"
+                return False, self.last_error
+            if not port_free(self.api_port, "127.0.0.1"):
+                owner = port_owner_pid(self.api_port)
+                suffix = f"（进程 {owner}）" if owner else ""
+                self.last_error = f"MediaMTX API 端口 {self.api_port} 已被占用{suffix}"
                 return False, self.last_error
             config_file = self.write_config(config, web_port=web_port, lan_ip=lan_ip)
             self.log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -295,6 +302,15 @@ class MediaMTXManager:
                 if self._api_ready():
                     if self.process.poll() is not None:
                         continue
+                    owner = port_owner_pid(self.rtsp_port)
+                    if owner and self.process.pid and owner != self.process.pid:
+                        self.last_error = f"RTSP 端口 {self.rtsp_port} 被其它进程占用（进程 {owner}）"
+                        error(self.last_error, "mediamtx")
+                        try:
+                            self.process.terminate()
+                        except Exception:
+                            pass
+                        return False, self.last_error
                     info(f"MediaMTX 已启动 · RTSP :{self.rtsp_port} · API :{self.api_port}", "mediamtx")
                     return True, "已启动"
                 time.sleep(0.35)

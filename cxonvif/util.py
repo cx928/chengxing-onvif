@@ -112,13 +112,44 @@ def local_ip() -> str:
 
 
 def port_free(port: int, host: str = "0.0.0.0") -> bool:
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        # 不使用 SO_REUSEADDR：Windows 下它允许"抢占"已被监听的端口，导致误判
+    """检查端口是否可用（同时检查 IPv4 与 IPv6，避免漏判双栈监听）。"""
+    targets: list[tuple[int, str]] = []
+    if host in ("0.0.0.0", "", None):
+        targets.append((socket.AF_INET, "0.0.0.0"))
+        if socket.has_ipv6:
+            targets.append((socket.AF_INET6, "::"))
+    else:
+        family = socket.AF_INET6 if ":" in host else socket.AF_INET
+        targets.append((family, host))
+
+    for family, address in targets:
+        sock = socket.socket(family, socket.SOCK_STREAM)
         try:
-            sock.bind((host, port))
-            return True
+            # 不使用 SO_REUSEADDR：Windows 下它允许"抢占"已被监听的端口，导致误判
+            if family == socket.AF_INET6:
+                sock.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
+            sock.bind((address, port))
         except OSError:
             return False
+        finally:
+            sock.close()
+    return True
+
+
+def port_owner_pid(port: int, kind: str = "tcp") -> int | None:
+    """返回监听指定端口的进程 PID（需要 psutil，失败时返回 None）。"""
+    try:
+        import psutil
+
+        for conn in psutil.net_connections(kind=kind):
+            if not conn.laddr or getattr(conn.laddr, "port", None) != port:
+                continue
+            if conn.status == psutil.CONN_LISTEN and conn.pid:
+                return int(conn.pid)
+    except Exception:
+        return None
+    return None
+
 
 
 def find_free_port(start: int, end: int = 65535, host: str = "0.0.0.0") -> int | None:
