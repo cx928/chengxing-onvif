@@ -157,7 +157,8 @@ class FrameSource:
             args += ["-hwaccel", self.decoder]
         args += [
             "-rtsp_transport", self.transport,
-            "-fflags", "nobuffer",
+            "-fflags", "nobuffer+discardcorrupt",
+            "-err_detect", "ignore_err",
             "-flags", "low_delay",
             "-i", self.url,
             "-an", "-sn", "-dn",
