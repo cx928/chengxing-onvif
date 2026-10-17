@@ -1,0 +1,31 @@
+# 程星 ONVIF 运行依赖
+# 安装：python -m pip install -r requirements.txt
+
+# ---- 核心（必需） ----
+flask>=3.0
+flask-cors>=4.0
+requests>=2.31
+PyYAML>=6.0
+psutil>=5.9
+numpy>=1.24
+pillow>=10.0
+
+# ---- 视觉（检测框绘制 / 运动检测，强烈建议） ----
+opencv-python-headless>=4.9
+
+# ---- AI 推理（按需二选一或全装） ----
+# PyTorch 系（.pt 模型：YOLO 全系 / RT-DETR / YOLO-World）
+#   Windows CPU：pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   NVIDIA CUDA：pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+#   Intel 核显/独显：pip install torch-directml（Windows）或 intel-extension-for-pytorch
+ultralytics>=8.3
+
+# ONNX Runtime（.onnx 模型；按平台选择其一）
+#   CPU：      pip install onnxruntime
+#   NVIDIA：   pip install onnxruntime-gpu
+#   Intel/AMD/NVIDIA 通用 GPU：pip install onnxruntime-directml
+#   Intel 核显：pip install onnxruntime-openvino
+# onnxruntime>=1.17
+
+# Intel OpenVINO（Intel 核显/独显/NPU 最佳）
+# openvino>=2024.0

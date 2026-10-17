@@ -1,0 +1,114 @@
+<Page
+    x:Class="CXOnvif.Desktop.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="28,22,28,28" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Stretch">
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="关于" Style="{StaticResource PageTitleStyle}" />
+                <TextBlock Text="程星 ONVIF 桌面控制台 · 版本与技术信息。" Style="{StaticResource PageSubtitleStyle}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="18">
+                    <StackPanel Orientation="Horizontal" Spacing="18">
+                        <Border
+                            Width="60"
+                            Height="60"
+                            CornerRadius="16"
+                            Background="{StaticResource BrandSoftBrush}">
+                            <FontIcon
+                                Glyph="&#xE714;"
+                                FontFamily="Segoe Fluent Icons"
+                                FontSize="28"
+                                Foreground="{StaticResource BrandBrush}" />
+                        </Border>
+                        <StackPanel Spacing="4" VerticalAlignment="Center">
+                            <TextBlock
+                                Text="程星 ONVIF"
+                                FontSize="27"
+                                FontWeight="SemiBold"
+                                Foreground="{StaticResource TextPrimaryBrush}" />
+                            <TextBlock
+                                Text="多模型 AI 检测 · ONVIF 虚拟摄像机 · 硬件加速"
+                                Style="{StaticResource BodyStyle}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Grid ColumnSpacing="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="3">
+                            <TextBlock Text="引擎版本" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="EngineVersionText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="3">
+                            <TextBlock Text="桌面端版本" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="DesktopVersionText" Text="1.0.0" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="3">
+                            <TextBlock Text="引擎地址" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="EngineUrlText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock x:Name="EngineStateText" Style="{StaticResource CaptionStyle}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="简介" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock
+                        Text="程星 ONVIF 是一套运行在本机的 ONVIF 虚拟摄像机服务：把任意 RTSP 视频源接入 ONVIF 监控平台，叠加 YOLO 系列模型的检测结果，并提供 HTTP 事件推送、Mercury 模拟与硬件编码加速。桌面控制台只负责启停引擎、管理员密码、开机自启和打开 Web 控制台，业务配置全部在 Web 控制台完成。"
+                        Style="{StaticResource BodyStyle}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="关注与反馈" Style="{StaticResource SectionTitleStyle}" />
+                    <HyperlinkButton Style="{StaticResource LinkButtonStyle}" Click="OpenBilibili_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE774;" FontFamily="Segoe Fluent Icons" FontSize="12" />
+                            <TextBlock Text="B 站主页 · space.bilibili.com/1765875510" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                    <HyperlinkButton Style="{StaticResource LinkButtonStyle}" Click="OpenGithub_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE774;" FontFamily="Segoe Fluent Icons" FontSize="12" />
+                            <TextBlock Text="GitHub · github.com/cx928" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                    <HyperlinkButton Style="{StaticResource LinkButtonStyle}" Click="OpenEmail_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE715;" FontFamily="Segoe Fluent Icons" FontSize="12" />
+                            <TextBlock Text="邮箱 · wanghaotian@cxdx.edu.kg" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="开源许可与技术栈" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock Text="MIT License · 本程序以 MIT 许可发布，保留版权与许可声明。" Style="{StaticResource BodyStyle}" />
+                    <TextBlock
+                        Text="桌面端：.NET 8 · C# · WinUI 3（Windows App SDK）&#x0a;引擎：Python 3 · Flask REST API · ONVIF（WS-Discovery / SOAP）&#x0a;媒体：MediaMTX · FFmpeg&#x0a;检测：YOLO11 · ONNX Runtime · OpenVINO"
+                        Style="{StaticResource BodyStyle}" />
+                    <TextBlock
+                        Text="© 2026 程星 ONVIF · CX-ONVIF"
+                        Style="{StaticResource CaptionStyle}" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

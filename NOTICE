@@ -1,0 +1,41 @@
+# 第三方组件与致谢 / Third-party notices
+
+程星 ONVIF 自身代码以 MIT 协议发布。以下组件由各自作者维护，遵循其原始许可：
+
+## 运行依赖（由安装脚本下载或系统安装）
+
+| 组件 | 用途 | 许可 |
+| --- | --- | --- |
+| [FFmpeg](https://ffmpeg.org/) | 视频解码、编码、抓拍、叠加推流 | LGPL/GPL（依构建而定） |
+| [MediaMTX](https://github.com/bluenviron/mediamtx) | RTSP / WebRTC / HLS 流媒体服务 | MIT |
+| [Python](https://www.python.org/) | 运行时 | PSF |
+| [Flask](https://flask.palletsprojects.com/) | Web / REST API | BSD-3-Clause |
+| [OpenCV](https://opencv.org/) | 图像处理与绘制 | Apache-2.0 |
+| [PyTorch](https://pytorch.org/) | 推理运行时 | BSD-3-Clause |
+| [Ultralytics](https://github.com/ultralytics/ultralytics) | 模型加载与推理 | **AGPL-3.0** |
+| [ONNX Runtime](https://onnxruntime.ai/) | ONNX 推理 | MIT |
+| [OpenVINO](https://docs.openvino.ai/) | Intel 硬件推理 | Apache-2.0 |
+| [Pillow](https://python-pillow.org/) | 中文标签绘制 | HPND |
+
+> **关于 Ultralytics 许可**：YOLO 系列官方权重与 `ultralytics` 包采用 AGPL-3.0。
+> 商业闭源分发需获得 Ultralytics 企业授权，或改用自有模型 / 其他许可模型
+> （例如 ONNX/OpenVINO 格式的自训练模型）。本项目仅提供加载能力，不附带模型权重。
+
+## 代码来源与致谢
+
+本项目在工程实现上参考并改进了以下 MIT 项目中的 ONVIF 服务与虚拟摄像机思路：
+
+* **Tonys-Onvif-RTSP-Server**（BigTonyTones）— ONVIF 设备/媒体/事件服务、WS-Discovery、
+  多码流 Profile 的实现参考。
+  <https://github.com/BigTonyTones/Tonys-Onvf-RTSP-Server>
+* **aler9** — 原始 `mediamtx` 作者，MIT 许可文本中的版权人。
+  <https://github.com/bluenviron/mediamtx>
+
+在此基础上，程星 ONVIF 重写了配置模型、检测管线、厂商画像、叠加推流、硬件加速探测、
+Web 控制台与桌面端，并新增水星安防事件模拟等能力。原始 MIT 版权声明保留在 `LICENSE` 中。
+
+## 厂商名称说明
+
+MERCURY（水星安防）、TP-LINK、Hikvision（海康威视）、Dahua（大华）、UNV（宇视）、
+Ubiquiti 等名称仅用于描述 ONVIF 互操作性与设备画像，商标归各自权利人所有。
+本项目与上述厂商无隶属或合作关系。

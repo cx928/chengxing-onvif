@@ -1,0 +1,107 @@
+<Page
+    x:Class="CXOnvif.Desktop.Pages.AutostartPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="28,22,28,28" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Stretch">
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="启动项" Style="{StaticResource PageTitleStyle}" />
+                <TextBlock Text="配置引擎开机自动启动（Windows 计划任务 / 启动文件夹，由引擎负责安装）。" Style="{StaticResource PageSubtitleStyle}" />
+            </StackPanel>
+
+            <InfoBar
+                x:Name="MessageBar"
+                IsOpen="False"
+                IsClosable="True"
+                Severity="Informational" />
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="开机自动启动" Style="{StaticResource SectionTitleStyle}" />
+                            <TextBlock Text="开启后，引擎会在登录系统时以静默方式启动（mode = auto）。" Style="{StaticResource BodyStyle}" />
+                        </StackPanel>
+                        <ToggleSwitch
+                            x:Name="AutostartToggle"
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            OnContent="已开启"
+                            OffContent="已关闭"
+                            Toggled="AutostartToggle_Toggled" />
+                    </Grid>
+
+                    <Grid ColumnSpacing="24" RowSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="3">
+                            <TextBlock Text="安装状态" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="InstalledText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="3">
+                            <TextBlock Text="平台" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="PlatformText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Spacing="3">
+                            <TextBlock Text="管理员权限" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="AdminText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="3">
+                            <TextBlock Text="计划任务" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="TaskText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="1" Spacing="3">
+                            <TextBlock Text="启动文件夹" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="StartupFolderText" Text="—" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Spacing="3">
+                            <TextBlock Text="当前登录" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="LoginStateText" Text="未登录" Style="{StaticResource MetricValueStyle}" FontSize="16" />
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button x:Name="RefreshButton" Click="Refresh_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE72C;" FontFamily="Segoe Fluent Icons" FontSize="13" />
+                                <TextBlock Text="刷新状态" />
+                            </StackPanel>
+                        </Button>
+                        <ProgressRing x:Name="BusyRing" Width="16" Height="16" IsActive="False" VerticalAlignment="Center" />
+                        <TextBlock x:Name="UpdatedText" Style="{StaticResource CaptionStyle}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="启动器" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock x:Name="LauncherText" Text="—" Style="{StaticResource BodyStyle}" IsTextSelectionEnabled="True" />
+                    <TextBlock Text="详细状态" Style="{StaticResource MetricLabelStyle}" />
+                    <TextBlock x:Name="DetailText" Text="—" Style="{StaticResource CaptionStyle}" IsTextSelectionEnabled="True" MaxHeight="180" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock
+                Text="说明：启动项由引擎端的计划任务实现，通常需要管理员权限；若返回“需要管理员权限”，请以管理员身份运行引擎或使用安装脚本。"
+                Style="{StaticResource CaptionStyle}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>程星 ONVIF · 智能视频接入控制台</title>
+  <meta name="description" content="程星 ONVIF —— 多模型 AI 检测、ONVIF 虚拟摄像机、水星安防事件模拟、检测框叠加与硬件加速。">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+  <div id="boot" class="boot">
+    <div class="boot-logo">CX</div>
+    <div class="boot-name">程星 ONVIF</div>
+    <div class="boot-bar"><span></span></div>
+  </div>
+  <script>
+    (function () {
+      function report(kind, message, stack) {
+        try {
+          var boot = document.getElementById('boot');
+          if (!boot) return;
+          var box = document.getElementById('boot-error');
+          if (!box) {
+            box = document.createElement('pre');
+            box.id = 'boot-error';
+            box.style.cssText = 'max-width:88vw;max-height:40vh;overflow:auto;color:#f87171;font:12px/1.5 Consolas,monospace;background:#1a0f14;border:1px solid #7f1d1d;border-radius:8px;padding:10px;white-space:pre-wrap';
+            boot.appendChild(box);
+          }
+          box.textContent += kind + ': ' + message + (stack ? '\n' + stack : '') + '\n';
+        } catch (e) { /* ignore */ }
+      }
+      window.addEventListener('error', function (e) { report('ERROR', e.message, e.error && e.error.stack); });
+      window.addEventListener('unhandledrejection', function (e) {
+        var reason = e.reason || {};
+        report('REJECTION', reason.message || String(reason), reason.stack);
+      });
+    })();
+  </script>
+
+  <div id="login" class="login hidden">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="logo-mark">CX</div>
+        <div>
+          <h1>程星 ONVIF</h1>
+          <p>多模型 AI 检测 · 虚拟摄像机 · 硬件加速</p>
+        </div>
+      </div>
+      <form id="login-form" class="login-form" autocomplete="off">
+        <label class="field">
+          <span>管理员账号</span>
+          <input id="login-user" type="text" value="admin" autocomplete="username">
+        </label>
+        <label class="field">
+          <span>密码</span>
+          <input id="login-pass" type="password" placeholder="请输入密码" autocomplete="current-password" required>
+        </label>
+        <div id="login-error" class="form-error hidden"></div>
+        <button class="btn primary block" type="submit">登 录</button>
+      </form>
+      <div class="login-hint" id="login-hint">首次使用默认密码 <code>cx123456</code>，登录后请立即修改</div>
+      <div class="login-foot">
+        <a href="https://space.bilibili.com/1765875510" target="_blank" rel="noreferrer">B站</a>
+        <span>·</span>
+        <a href="https://github.com/cx928" target="_blank" rel="noreferrer">GitHub</a>
+        <span>·</span>
+        <a href="mailto:wanghaotian@cxdx.edu.kg">邮箱</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="logo-mark small">CX</div>
+        <div class="side-brand-text">
+          <strong>程星 ONVIF</strong>
+          <span id="side-version">v1.0.0</span>
+        </div>
+      </div>
+      <nav class="nav" id="nav">
+        <a class="nav-item" data-route="overview"><span class="nav-ico" data-icon="dashboard"></span>概览</a>
+        <a class="nav-item" data-route="cameras"><span class="nav-ico" data-icon="camera"></span>摄像机</a>
+        <a class="nav-item" data-route="events"><span class="nav-ico" data-icon="bell"></span>检测事件</a>
+        <a class="nav-item" data-route="models"><span class="nav-ico" data-icon="layers"></span>模型库</a>
+        <a class="nav-item" data-route="hardware"><span class="nav-ico" data-icon="cpu"></span>硬件加速</a>
+        <a class="nav-item" data-route="settings"><span class="nav-ico" data-icon="settings"></span>系统设置</a>
+        <a class="nav-item" data-route="about"><span class="nav-ico" data-icon="info"></span>关于</a>
+      </nav>
+      <div class="side-foot">
+        <div class="side-stat" id="side-stat">正在连接…</div>
+        <a href="https://github.com/cx928" target="_blank" rel="noreferrer" class="side-link">GitHub · cx928</a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h2 id="page-title">概览</h2>
+          <span id="page-sub" class="muted"></span>
+        </div>
+        <div class="topbar-actions">
+          <span id="health-pill" class="pill offline"><i></i><span>未连接</span></span>
+          <button class="icon-btn" id="btn-refresh" title="刷新"><span data-icon="refresh"></span></button>
+          <div class="user-menu">
+            <button class="avatar" id="btn-user" title="账号">A</button>
+            <div class="user-pop hidden" id="user-pop">
+              <div class="user-pop-head"><strong id="user-name">admin</strong><span class="muted">管理员</span></div>
+              <button class="pop-item" data-go="settings" data-tab="security">修改密码</button>
+              <button class="pop-item" data-go="about">关于程星 ONVIF</button>
+              <button class="pop-item danger" id="btn-logout">退出登录</button>
+            </div>
+          </div>
+        </div>
+      </header>
+      <main id="view" class="view"></main>
+    </div>
+  </div>
+
+  <div id="toasts" class="toasts"></div>
+  <div id="modal-root"></div>
+  <div id="drawer-root"></div>
+
+  <script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

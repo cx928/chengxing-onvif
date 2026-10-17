@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cxonvif"
+version = "1.0.0"
+description = "程星 ONVIF —— 多模型 AI 检测 / ONVIF 虚拟摄像机 / 硬件加速"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "cx928", email = "wanghaotian@cxdx.edu.kg" }]
+keywords = ["onvif", "rtsp", "yolo", "nvr", "ai", "mercury", "mediamtx"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Video",
+]
+dependencies = [
+    "flask>=3.0",
+    "flask-cors>=4.0",
+    "requests>=2.31",
+    "PyYAML>=6.0",
+    "psutil>=5.9",
+    "numpy>=1.24",
+    "pillow>=10.0",
+]
+
+[project.optional-dependencies]
+vision = ["opencv-python-headless>=4.9"]
+ultralytics = ["ultralytics>=8.3", "torch", "torchvision"]
+onnx = ["onnxruntime>=1.17"]
+openvino = ["openvino>=2024.0"]
+all = [
+    "opencv-python-headless>=4.9",
+    "ultralytics>=8.3",
+    "onnxruntime>=1.17",
+    "openvino>=2024.0",
+]
+
+[project.scripts]
+cxonvif = "cxonvif.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/cx928/chengxing-onvif"
+Source = "https://github.com/cx928/chengxing-onvif"
+"Bilibili" = "https://space.bilibili.com/1765875510"
+
+[tool.setuptools.packages.find]
+include = ["cxonvif*"]
+
+[tool.setuptools]
+include-package-data = true

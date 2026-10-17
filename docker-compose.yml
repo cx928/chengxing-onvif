@@ -1,0 +1,19 @@
+services:
+  cxonvif:
+    build: .
+    container_name: chengxing-onvif
+    restart: unless-stopped
+    ports:
+      - "5552:5552"     # Web 控制台 / REST API
+      - "8554:8554"     # RTSP（NVR 拉流）
+      - "8888:8888"     # HLS
+      - "8889:8889"     # WebRTC（网页预览）
+      - "8189:8189/udp" # WebRTC ICE
+      - "8001-8020:8001-8020"  # ONVIF 虚拟摄像机端口
+    volumes:
+      - ./data:/data
+    environment:
+      - CXONVIF_HOME=/data
+      - WEB_UI_PORT=5552
+    # Linux 上使用 host 网络可获得最佳 WebRTC / ONVIF 发现体验：
+    # network_mode: host

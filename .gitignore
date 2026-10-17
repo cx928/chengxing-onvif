@@ -1,0 +1,45 @@
+# 程星 ONVIF / ChengXing ONVIF
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+.env
+
+# 运行时数据
+data/
+*.log
+*.pid
+tmp/
+backups/
+snapshots/
+models/*.pt
+models/*.onnx
+models/**/*.xml
+models/**/*.bin
+models/**/*.engine
+
+# 第三方二进制（由安装脚本下载）
+vendor/
+ffmpeg/
+mediamtx.exe
+mediamtx
+ffmpeg.exe
+ffprobe.exe
+
+# 桌面端
+desktop/**/bin/
+desktop/**/obj/
+desktop/dist/
+*.user
+.vs/
+
+# 测试与临时文件
+.pytest_cache/
+.ultralytics/
+*.part
+*.bak
+.DS_Store
+Thumbs.db

@@ -1,0 +1,175 @@
+<Page
+    x:Class="CXOnvif.Desktop.Pages.OverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="28,22,28,28" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="18" MaxWidth="900" HorizontalAlignment="Stretch">
+
+            <StackPanel Spacing="4">
+                <TextBlock Text="概览" Style="{StaticResource PageTitleStyle}" />
+                <TextBlock Text="启动或停止程星 ONVIF 引擎，并查看服务实时状态。" Style="{StaticResource PageSubtitleStyle}" />
+            </StackPanel>
+
+            <InfoBar
+                x:Name="MessageBar"
+                IsOpen="False"
+                IsClosable="True"
+                Severity="Informational" />
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="18">
+
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Ellipse
+                                x:Name="StatusDot"
+                                Width="10"
+                                Height="10"
+                                VerticalAlignment="Center"
+                                Fill="{StaticResource NeutralBrush}" />
+                            <StackPanel Spacing="2" VerticalAlignment="Center">
+                                <TextBlock
+                                    x:Name="StatusText"
+                                    Text="正在检测…"
+                                    FontSize="21"
+                                    FontWeight="SemiBold"
+                                    Foreground="{StaticResource TextPrimaryBrush}" />
+                                <TextBlock
+                                    x:Name="StatusHintText"
+                                    Text="正在连接引擎…"
+                                    Style="{StaticResource CaptionStyle}" />
+                            </StackPanel>
+                            <Border
+                                x:Name="StatusBadge"
+                                Background="{StaticResource NeutralBrush}"
+                                CornerRadius="10"
+                                Padding="9,3"
+                                VerticalAlignment="Center">
+                                <TextBlock
+                                    x:Name="StatusBadgeText"
+                                    Text="检测中"
+                                    FontSize="11"
+                                    Foreground="White" />
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="10"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                            <ProgressRing x:Name="BusyRing" Width="16" Height="16" IsActive="False" />
+                            <TextBlock
+                                x:Name="LastCheckText"
+                                Text="尚未检测"
+                                Style="{StaticResource CaptionStyle}"
+                                VerticalAlignment="Center" />
+                            <Button x:Name="RefreshButton" Click="Refresh_Click" ToolTipService.ToolTip="立即刷新">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <FontIcon Glyph="&#xE72C;" FontFamily="Segoe Fluent Icons" FontSize="13" />
+                                    <TextBlock Text="刷新" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button x:Name="StartButton" Click="Start_Click" Style="{StaticResource AccentButtonStyle}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE768;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                                <TextBlock Text="启动引擎" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="StopButton" Click="Stop_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE71A;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                                <TextBlock Text="停止引擎" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="RestartButton" Click="Restart_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE72C;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                                <TextBlock Text="重启引擎" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="WebButton" Click="OpenWeb_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE774;" FontFamily="Segoe Fluent Icons" FontSize="14" />
+                                <TextBlock Text="打开 Web 控制台" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <Grid ColumnSpacing="24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Spacing="3">
+                            <TextBlock Text="引擎版本" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="VersionText" Text="—" Style="{StaticResource MetricValueStyle}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="3">
+                            <TextBlock Text="摄像机（运行 / 总数）" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="CameraText" Text="—" Style="{StaticResource MetricValueStyle}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="3">
+                            <TextBlock Text="运行时长" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock x:Name="UptimeText" Text="—" Style="{StaticResource MetricValueStyle}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="3" Spacing="3">
+                            <TextBlock Text="刷新频率" Style="{StaticResource MetricLabelStyle}" />
+                            <TextBlock Text="每 3 秒" Style="{StaticResource MetricValueStyle}" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="引擎设置" Style="{StaticResource SectionTitleStyle}" />
+                    <TextBlock
+                        Text="设置保存在本地，保存后立即生效。引擎地址需与引擎监听端口一致。"
+                        Style="{StaticResource BodyStyle}" />
+
+                    <TextBox
+                        x:Name="EngineUrlBox"
+                        Header="引擎地址"
+                        PlaceholderText="http://127.0.0.1:5552" />
+                    <TextBox
+                        x:Name="RepoBox"
+                        Header="仓库根目录（启动引擎时的工作目录）"
+                        PlaceholderText="C:\ChengXing-ONVIF" />
+                    <TextBox
+                        x:Name="PythonBox"
+                        Header="Python 路径（留空则自动探测 pythonw.exe，其次 python.exe）"
+                        PlaceholderText="C:\...\pythonw.exe" />
+                    <TextBox
+                        x:Name="ArgsBox"
+                        Header="启动参数"
+                        PlaceholderText="-m cxonvif serve --silent" />
+
+                    <TextBlock x:Name="PythonHintText" Style="{StaticResource CaptionStyle}" />
+
+                    <StackPanel Orientation="Horizontal" Spacing="14">
+                        <Button x:Name="SaveButton" Content="保存设置" Click="SaveSettings_Click" />
+                        <TextBlock
+                            x:Name="SettingsPathText"
+                            Style="{StaticResource CaptionStyle}"
+                            VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <TextBlock
+                Text="提示：启动引擎需要本机已安装 Python 3，且能通过 `python -m cxonvif` 导入引擎包；停止引擎若未登录会跳过 API 关闭并直接结束进程。"
+                Style="{StaticResource CaptionStyle}" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
