@@ -6,6 +6,13 @@
 
 ### 新增
 
+**安装包**
+
+* Windows MSI 安装包（WiX 3.14）：内置 Python 3.12、FFmpeg、MediaMTX、ONNX Runtime、YOLO11n ONNX 模型与 WinUI 桌面控制台
+* 便携 ZIP（免安装）：解压即用，内置静默启动/控制台启动脚本与 AI 组件安装脚本
+* 开始菜单 / 桌面快捷方式、登录自启、静默安装与卸载
+* 打包脚本 `packaging/build-installers.ps1` 可一键复现
+
 **引擎**
 
 * ONVIF 虚拟摄像机：设备 / 媒体 / 事件服务、WS-Discovery、多码流 Profile、快照、PullPoint 订阅

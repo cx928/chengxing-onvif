@@ -1,6 +1,15 @@
 # 快速上手（5 分钟）
 
-## 1. 安装
+## 0. 使用安装包（最简单）
+
+从 [Releases](https://github.com/cx928/chengxing-onvif/releases) 下载：
+
+* `ChengXing-ONVIF-1.0.0-x64.msi`：双击安装，装好即用
+* `ChengXing-ONVIF-1.0.0-portable-win-x64.zip`：解压后双击「启动程星 ONVIF.vbs」
+
+安装包已包含 Python 运行时、FFmpeg、MediaMTX 与 ONNX 模型，无需下面的手动步骤。
+
+## 1. 源码安装
 
 Windows：
 

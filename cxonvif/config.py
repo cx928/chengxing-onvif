@@ -15,9 +15,19 @@ from pathlib import Path
 from typing import Any, get_type_hints
 
 from . import security
-from .paths import CONFIG_FILE
+from .paths import CONFIG_FILE, PROJECT_ROOT
 from .util import atomic_write_json, new_uuid, read_json, slugify
 from .version import CONFIG_SCHEMA_VERSION
+
+
+def _read_packaged_defaults() -> dict[str, Any]:
+    """安装版可在 app/defaults.json 中覆盖默认模型等配置。"""
+    path = PROJECT_ROOT / "defaults.json"
+    data = read_json(path, default=None)
+    return data if isinstance(data, dict) else {}
+
+
+_PACKAGED_DEFAULTS = _read_packaged_defaults()
 
 # --------------------------------------------------------------------------------------
 # 默认值
@@ -62,6 +72,14 @@ DEFAULT_AUTH: dict[str, Any] = {
     "sessionTtl": 86400,
     "requireLogin": True,
 }
+
+# 安装版默认值（例如默认使用 ONNX 模型，无需 PyTorch 即可推理）
+if isinstance(_PACKAGED_DEFAULTS.get("settings"), dict):
+    DEFAULT_SETTINGS.update(_PACKAGED_DEFAULTS["settings"])
+_DEFAULT_MODEL: str = (
+    (str(_PACKAGED_DEFAULTS.get("detect", {}).get("model") or "").strip()
+     or str(DEFAULT_SETTINGS.get("defaultModel") or "yolo11n"))
+)
 
 # COCO 类别 → 通用目标组
 DEFAULT_CLASS_MAP: dict[str, str] = {
@@ -150,7 +168,7 @@ class Zone:
 @dataclass
 class DetectConfig:
     enabled: bool = True
-    model: str = "yolo11n"
+    model: str = _DEFAULT_MODEL
     backend: str = "auto"
     device: str = "auto"
     confidence: float = 0.45

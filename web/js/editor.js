@@ -72,6 +72,12 @@ export function openCameraEditor(cam, ctx) {
   const isNew = !cam || !cam.id;
   const config = cam?.config || {};
   const draft = isNew ? defaultCamera() : clone(config);
+  if (isNew) {
+    const defaults = ctx.state.info?.defaults || {};
+    if (defaults.model) draft.detect.model = defaults.model;
+    if (defaults.backend) draft.detect.backend = defaults.backend;
+    if (defaults.device) draft.detect.device = defaults.device;
+  }
   draft.source.mainUrl = cam?.streams?.main?.source || draft.source.mainUrl || '';
   draft.source.subUrl = cam?.streams?.sub?.source || draft.source.subUrl || '';
   const passwordWasSet = Boolean(config?.onvif?.passwordSet);

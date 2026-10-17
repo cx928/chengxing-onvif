@@ -11,6 +11,29 @@
 
 ---
 
+## 下载安装
+
+| 方式 | 适用 | 文件 |
+| --- | --- | --- |
+| **MSI 安装包** | Windows 10/11 x64，推荐 | `ChengXing-ONVIF-1.0.0-x64.msi` |
+| **便携 ZIP** | 免安装、U 盘携带 | `ChengXing-ONVIF-1.0.0-portable-win-x64.zip` |
+| **源码** | 开发 / 自定义 | `git clone` + `install.ps1` |
+
+前往 [Releases](https://github.com/cx928/chengxing-onvif/releases) 下载。
+
+安装包已内置：**Python 3.12 运行时、FFmpeg、MediaMTX、ONNX Runtime、YOLO11n ONNX 模型、WinUI 3 桌面控制台**，
+无需单独安装 Python 或配置环境；默认以 ONNX 推理，装好即可检测人形/车辆。
+需要 `.pt` 模型（YOLO26/11/8、RT-DETR、YOLO-World）时，运行包内的「安装 AI 组件」即可。
+
+* MSI 安装到 `C:\Program Files\ChengXing ONVIF`，数据在 `C:\ProgramData\ChengXingOnvif`
+* 开始菜单：启动 / 桌面控制台 / 静默启动 / 使用说明 / 卸载
+* 安装后默认登录自启；可在「系统设置 → 开机自启」改为开机级静默启动
+* 便携版解压后双击「启动程星 ONVIF.vbs」
+
+构建方法见 [packaging/README.md](packaging/README.md)。
+
+---
+
 ## 为什么是程星 ONVIF
 
 大多数「RTSP 转 ONVIF」工具只做协议转换，录像机看到的仍然是一路“哑”视频；而 AI 检测工具又往往只支持 YOLO、只会在网页里画框，无法把结构化事件交给 NVR。

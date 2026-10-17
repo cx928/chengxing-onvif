@@ -84,6 +84,29 @@ class PostprocessTests(unittest.TestCase):
         self.assertEqual(detections[0].label, "person")
         self.assertAlmostEqual(detections[0].box[0], 10 / 640, places=4)
 
+    def test_letterbox_mapping_to_original_frame(self) -> None:
+        # 640x640 canvas 中心框；原始 1024x494，缩放 0.625，上下补边 165.5
+        output = np.zeros((1, 1, 4 + 3), dtype=np.float32)
+        output[0, 0, :4] = [320.0, 320.0, 64.0, 64.0]
+        output[0, 0, 4] = 0.9
+        detections = decode_detections(
+            output,
+            labels=LABELS,
+            class_map=CLASS_MAP,
+            conf_threshold=0.3,
+            input_size=640,
+            output_format="yolo_v8",
+            scale=0.625,
+            pad=(0, 165.5),
+            original_size=(1024, 494),
+        )
+        self.assertEqual(len(detections), 1)
+        x1, y1, x2, y2 = detections[0].box
+        self.assertAlmostEqual(x1, (320 - 32) / 0.625 / 1024, places=3)
+        self.assertAlmostEqual(x2, (320 + 32) / 0.625 / 1024, places=3)
+        self.assertAlmostEqual(y1, (320 - 32 - 165.5) / 0.625 / 494, places=3)
+        self.assertAlmostEqual(y2, (320 + 32 - 165.5) / 0.625 / 494, places=3)
+
     def test_decode_rtdetr_normalized(self) -> None:
         output = np.zeros((1, 2, 4 + 3), dtype=np.float32)
         output[0, 0, :4] = [0.5, 0.5, 0.2, 0.4]

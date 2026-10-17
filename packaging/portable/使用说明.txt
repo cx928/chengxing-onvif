@@ -1,0 +1,50 @@
+程星 ONVIF 便携版（Windows x64）
+================================
+
+一、启动
+  双击「启动程星 ONVIF.vbs」→ 自动静默启动并打开浏览器。
+  浏览器访问 http://localhost:5552
+  默认账号：admin
+  默认密码：cx123456  （首次登录会要求修改）
+
+  需要查看日志时，双击「启动程星 ONVIF（控制台）.bat」。
+
+二、目录说明
+  app\        引擎、网页控制台、FFmpeg、MediaMTX、内置 ONNX 模型
+  python\     内置 Python 3.12 运行时（无需安装 Python）
+  desktop\    WinUI 3 桌面控制台（CXOnvif.Desktop.exe）
+  数据目录    C:\ProgramData\ChengXingOnvif
+              （配置、模型、截图、日志）
+
+三、AI 模型
+  已内置轻量 ONNX 模型（YOLO11n），无需 PyTorch 即可检测人形/车辆等。
+  如需 .pt 模型（YOLO26/11/8、RT-DETR、YOLO-World），请双击
+  「安装 AI 组件（PyTorch-YOLO）.bat」，安装完成后在模型库下载模型。
+
+四、接入录像机
+  1. 在控制台添加摄像机（RTSP 地址）
+  2. 摄像机编辑 → ONVIF / 水星，设置端口与密码
+  3. 在 NVR 中手动添加 ONVIF 设备：IP + 端口 + 用户名密码
+  4. 叠加流地址：rtsp://<本机IP>:8554/<路径>_overlay
+
+五、开机自启
+  方式一：网页「系统设置 → 开机自启 → 启用」
+  方式二：命令行
+    cd /d app
+    ..\python\python.exe -m cxonvif autostart install
+  卸载：
+    ..\python\python.exe -m cxonvif autostart uninstall
+
+六、停止服务
+  在网页「系统设置 → 维护 → 停止服务」，
+  或任务管理器结束 pythonw.exe。
+
+七、常见问题
+  * 端口被占用：修改 app\..\ 数据目录 config.json 中的端口
+  * NVR 搜不到：放行防火墙 TCP 5552/8554/8001+ 与 UDP 3702
+  * H.265 网页黑屏：摄像机改为 H.264 或开启转码
+
+品牌与联系
+  B 站   https://space.bilibili.com/1765875510
+  GitHub https://github.com/cx928
+  邮箱   wanghaotian@cxdx.edu.kg

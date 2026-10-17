@@ -230,6 +230,21 @@ def _decode_dense(
     boxes = _xywh_to_xyxy(boxes_raw, center=True)
     if not normalized:
         boxes = boxes / float(input_size)
+    # 把 letterbox 画布坐标还原到原始画面（去掉 padding、除以缩放比）
+    if original_size is not None:
+        width, height = original_size
+        safe_scale = max(float(scale), 1e-6)
+        pad_w, pad_h = pad
+        pixels = boxes * float(input_size)
+        boxes = np.stack(
+            [
+                (pixels[:, 0] - pad_w) / safe_scale / max(width, 1),
+                (pixels[:, 1] - pad_h) / safe_scale / max(height, 1),
+                (pixels[:, 2] - pad_w) / safe_scale / max(width, 1),
+                (pixels[:, 3] - pad_h) / safe_scale / max(height, 1),
+            ],
+            axis=1,
+        )
     np.clip(boxes, 0.0, 1.0, out=boxes)
 
     keep = nms(boxes, confidences, iou_threshold)

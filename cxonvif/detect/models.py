@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from ..logbus import info, warn
-from ..paths import MODELS_DIR
+from ..paths import MODELS_DIR, PROJECT_ROOT
 
 ASSET_BASE = "https://github.com/ultralytics/assets/releases/download/v8.4.0"
 
@@ -199,6 +199,31 @@ def list_custom_models() -> list[dict[str, Any]]:
             }
         )
     return found
+
+
+def install_bundled_models() -> int:
+    """把安装包内置的模型复制到数据目录（首次运行/升级时）。"""
+    source = PROJECT_ROOT / "models"
+    if not source.is_dir():
+        return 0
+    MODELS_DIR.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for path in source.iterdir():
+        if not path.is_file() or path.suffix.lower() not in {".pt", ".onnx", ".xml", ".bin", ".engine", ".plan"}:
+            continue
+        target = MODELS_DIR / path.name
+        if target.exists():
+            continue
+        try:
+            import shutil
+
+            shutil.copy2(path, target)
+            copied += 1
+        except OSError as exc:
+            warn(f"内置模型复制失败 {path.name}: {exc}", "models")
+    if copied:
+        info(f"已安装 {copied} 个内置模型到 {MODELS_DIR}", "models")
+    return copied
 
 
 _download_lock = threading.Lock()

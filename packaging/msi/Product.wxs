@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*"
+           Name="程星 ONVIF"
+           Language="2052"
+           Version="1.0.0.0"
+           Manufacturer="程星 ONVIF"
+           UpgradeCode="7F2E4C1A-9B3D-4A6E-8C5F-1D2B3A4C5E60">
+
+    <Package InstallerVersion="500"
+             Compressed="yes"
+             InstallScope="perMachine"
+             Platform="x64"
+             Description="程星 ONVIF —— 多模型 AI 检测 / ONVIF 虚拟摄像机 / 水星安防事件模拟 / 检测框叠加"
+             Comments="https://github.com/cx928/chengxing-onvif"
+             Keywords="ONVIF,RTSP,AI,YOLO,NVR" />
+
+    <MajorUpgrade DowngradeErrorMessage="已安装更高版本的程星 ONVIF，请先卸载后再安装。"
+                  AllowSameVersionUpgrades="yes" />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="CxIcon" SourceFile="cx.ico" />
+    <Property Id="ARPPRODUCTICON" Value="CxIcon" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/cx928/chengxing-onvif" />
+    <Property Id="ARPURLINFOABOUT" Value="https://space.bilibili.com/1765875510" />
+    <Property Id="ARPCONTACT" Value="wanghaotian@cxdx.edu.kg" />
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
+    <UIRef Id="WixUI_InstallDir" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLDIR" Name="ChengXing ONVIF" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="程星 ONVIF" />
+      </Directory>
+      <Directory Id="DesktopFolder" />
+    </Directory>
+
+    <DirectoryRef Id="ProgramMenuDir">
+      <Component Id="StartMenuShortcuts" Guid="1A2B3C4D-5E6F-4A70-8B91-2C3D4E5F6071">
+        <Shortcut Id="StartMenuApp"
+                  Name="程星 ONVIF"
+                  Description="启动服务并打开网页控制台"
+                  Target="[INSTALLDIR]python\pythonw.exe"
+                  Arguments="-m cxonvif serve --browser"
+                  WorkingDirectory="dirE346A75FEDD174A44A845475C6757E1F"
+                  Icon="CxIcon" />
+        <Shortcut Id="StartMenuDesktop"
+                  Name="程星 ONVIF 控制台"
+                  Description="WinUI 3 桌面控制台（启动服务 / 修改密码 / 开机自启）"
+                  Target="[INSTALLDIR]desktop\CXOnvif.Desktop.exe"
+                  WorkingDirectory="dirAE55D74E2EBDE9E26B92AFFB035DA4A3"
+                  Icon="CxIcon" />
+        <Shortcut Id="StartMenuSilent"
+                  Name="静默启动（无窗口）"
+                  Description="后台启动服务，不打开浏览器"
+                  Target="[INSTALLDIR]python\pythonw.exe"
+                  Arguments="-m cxonvif serve --silent"
+                  WorkingDirectory="dirE346A75FEDD174A44A845475C6757E1F"
+                  Icon="CxIcon" />
+        <Shortcut Id="StartMenuDocs"
+                  Name="使用说明"
+                  Description="便携版与安装版使用说明"
+                  Target="[INSTALLDIR]使用说明.txt"
+                  WorkingDirectory="INSTALLDIR" />
+        <Shortcut Id="StartMenuUninstall"
+                  Name="卸载程星 ONVIF"
+                  Description="卸载程星 ONVIF"
+                  Target="[System64Folder]msiexec.exe"
+                  Arguments="/x [ProductCode]" />
+        <RemoveFolder Id="RemoveProgramMenuDir" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\ChengXing\ONVIF" Name="StartMenu" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="2B3C4D5E-6F70-4B81-9CA2-3D4E5F607182">
+        <Shortcut Id="DesktopApp"
+                  Name="程星 ONVIF"
+                  Description="启动程星 ONVIF 并打开网页控制台"
+                  Target="[INSTALLDIR]python\pythonw.exe"
+                  Arguments="-m cxonvif serve --browser"
+                  WorkingDirectory="dirE346A75FEDD174A44A845475C6757E1F"
+                  Icon="CxIcon" />
+        <RegistryValue Root="HKCU" Key="Software\ChengXing\ONVIF" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="INSTALLDIR">
+      <Component Id="LoginAutostart" Guid="3C4D5E6F-7081-4C92-ADB3-4E5F60718293">
+        <RegistryValue Root="HKLM"
+                       Key="Software\Microsoft\Windows\CurrentVersion\Run"
+                       Name="ChengXingOnvif"
+                       Type="string"
+                       Value="&quot;[INSTALLDIR]python\pythonw.exe&quot; -m cxonvif serve --silent"
+                       KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="MainFeature" Title="程星 ONVIF" Level="1" Display="expand"
+             Description="引擎、网页控制台、桌面控制台、FFmpeg、MediaMTX 与内置模型">
+      <ComponentGroupRef Id="CxFiles" />
+      <ComponentRef Id="StartMenuShortcuts" />
+      <ComponentRef Id="DesktopShortcut" />
+      <ComponentRef Id="LoginAutostart" />
+    </Feature>
+  </Product>
+</Wix>
+
+
+
+
+

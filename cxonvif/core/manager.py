@@ -12,7 +12,7 @@ from typing import Any
 from .. import brand
 from ..bus import EventBus
 from ..config import AppConfig, CameraConfig, ConfigStore
-from ..detect.models import list_models
+from ..detect.models import install_bundled_models, list_models
 from ..detect.types import DetectionEvent
 from ..emulate import AlarmPusher
 from ..hw.ffmpeg import resolve_ffmpeg
@@ -33,6 +33,10 @@ class CameraManager:
         self.events = EventBus(history=1000)
         self.ffmpeg = resolve_ffmpeg(self.settings.get("ffmpegPath", ""))
         self.hardware: HardwareProfile = get_profile(self.settings)
+        try:
+            install_bundled_models()
+        except Exception:
+            pass
         self.mediamtx = MediaMTXManager(self.settings)
         self.cameras: dict[int, VirtualCamera] = {}
         self.last_events: deque[dict] = deque(maxlen=300)
@@ -297,6 +301,11 @@ class CameraManager:
                 "hls": int(self.settings.get("hlsPort", 8888)),
                 "webrtc": int(self.settings.get("webrtcPort", 8889)),
                 "onvifStart": int(self.settings.get("onvifPortStart", 8001)),
+            },
+            "defaults": {
+                "model": self.settings.get("defaultModel", "yolo11n"),
+                "backend": self.settings.get("defaultBackend", "auto"),
+                "device": self.settings.get("inferenceDevice", "auto"),
             },
             "hardware": self.hardware.to_dict(),
             "ffmpeg": {

@@ -35,7 +35,13 @@ def cmd_serve(args: argparse.Namespace) -> int:
     store = ConfigStore()
     if args.port:
         store.update_settings({"webPort": int(args.port)})
-    return run_engine(store, host=args.host, port=args.port, open_browser=not args.no_browser)
+    if args.browser:
+        open_browser = True
+    elif args.no_browser:
+        open_browser = False
+    else:
+        open_browser = None
+    return run_engine(store, host=args.host, port=args.port, open_browser=open_browser)
 
 
 def cmd_password(args: argparse.Namespace) -> int:
@@ -144,6 +150,7 @@ def build_parser() -> argparse.ArgumentParser:
     serve.add_argument("--port", type=int, default=None)
     serve.add_argument("--silent", action="store_true", help="静默模式（不输出到控制台，适合开机自启）")
     serve.add_argument("--no-browser", action="store_true", help="不自动打开浏览器")
+    serve.add_argument("--browser", action="store_true", help="启动后自动打开浏览器（安装版快捷方式使用）")
     serve.add_argument("--debug", action="store_true")
     serve.set_defaults(func=cmd_serve)
 
