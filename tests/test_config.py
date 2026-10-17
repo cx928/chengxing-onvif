@@ -78,6 +78,13 @@ class ConfigStoreTests(unittest.TestCase):
         self.assertTrue(public["onvif"]["passwordSet"])
         self.assertEqual(public["onvif"]["password"], "")
 
+    def test_update_settings_keeps_auth_flags(self) -> None:
+        self.store.update_settings({"requireLogin": False, "webPort": 6001})
+        self.assertFalse(self.store.config.auth.requireLogin)
+        self.assertEqual(self.store.config.settings["webPort"], 6001)
+        self.store.update_settings({"requireLogin": True})
+        self.assertTrue(self.store.config.auth.requireLogin)
+
     def test_set_password(self) -> None:
         self.store.set_password("NewPass123!", must_change=False)
         self.assertTrue(self.store.verify_password("NewPass123!"))

@@ -528,6 +528,11 @@ class ConfigStore:
     # ---- 设置 ----
     def update_settings(self, data: dict[str, Any]) -> dict[str, Any]:
         with self._lock:
+            # 认证相关字段单独处理，避免被 DEFAULT_SETTINGS 过滤掉
+            if "requireLogin" in data:
+                self.config.auth.requireLogin = bool(data["requireLogin"])
+            if "mustChangePassword" in data:
+                self.config.auth.mustChangePassword = bool(data["mustChangePassword"])
             settings = copy.deepcopy(DEFAULT_SETTINGS)
             settings.update(self.config.settings)
             settings.update({k: v for k, v in data.items() if k in DEFAULT_SETTINGS})

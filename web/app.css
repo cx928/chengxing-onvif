@@ -190,6 +190,11 @@ input[type=text], input[type=password], input[type=number], input[type=url], inp
 textarea { height: auto; min-height: 72px; padding: 9px 11px; resize: vertical; line-height: 1.5; }
 input:focus, select:focus, textarea:focus { border-color: rgba(34, 197, 94, .55); box-shadow: 0 0 0 3px rgba(34, 197, 94, .1); }
 input::placeholder, textarea::placeholder { color: #4b5b72; }
+/* 隐藏浏览器自带的密码显示/自动填充按钮，保持界面统一 */
+input::-ms-reveal, input::-ms-clear { display: none; width: 0; height: 0; }
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-strong-password-auto-fill-button,
+input::-webkit-contacts-auto-fill-button { visibility: hidden !important; display: none !important; pointer-events: none; }
 select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #64748b 50%), linear-gradient(135deg, #64748b 50%, transparent 50%); background-position: calc(100% - 15px) 15px, calc(100% - 10px) 15px; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 30px; }
 input[type=range] { width: 100%; accent-color: var(--accent); height: 22px; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
