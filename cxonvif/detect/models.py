@@ -104,6 +104,7 @@ _pt("yolov8s-worldv2", "YOLO-World v2 S", "yolov8s-worldv2.pt", 24.0, "开放词
 # ---- 官方预导出 ONNX（无需本机导出，直接可跑 ONNX Runtime） ----
 _ONNX_PRESETS = [
     ("yolo26n-onnx", "YOLO26n (ONNX)", "yolo26n.onnx", 10.0, "ONNX Runtime / DirectML 通用", "end2end"),
+    ("yolo26s-onnx", "YOLO26s (ONNX)", "yolo26s.onnx", 36.5, "YOLO26s ONNX，精度更高", "end2end"),
     ("yolo11n-onnx", "YOLO11n (ONNX)", "yolo11n.onnx", 10.4, "ONNX Runtime / DirectML 通用", "auto"),
     ("yolo11s-onnx", "YOLO11s (ONNX)", "yolo11s.onnx", 36.0, "ONNX Runtime 小模型", "auto"),
     ("yolov8n-onnx", "YOLOv8n (ONNX)", "yolov8n.onnx", 12.0, "ONNX Runtime 兼容性最好", "auto"),

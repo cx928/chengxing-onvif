@@ -259,6 +259,29 @@ class MediaMTXManager:
             self.binary = download_binary()
         return self.binary
 
+    def _cleanup_stale(self) -> None:
+        """清理使用本配置的残留 MediaMTX（引擎异常退出时可能留下）。"""
+        try:
+            import psutil
+
+            config_path = str(self.config_path)
+            for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+                try:
+                    name = (proc.info.get("name") or "").lower()
+                    cmdline = " ".join(proc.info.get("cmdline") or [])
+                    if "mediamtx" not in name or config_path not in cmdline:
+                        continue
+                    info(f"清理残留 MediaMTX 进程 {proc.pid}", "mediamtx")
+                    proc.terminate()
+                    try:
+                        proc.wait(timeout=3)
+                    except psutil.TimeoutExpired:
+                        proc.kill()
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
     def start(self, config: AppConfig, *, web_port: int, lan_ip: str) -> tuple[bool, str]:
         with self._lock:
             if self.is_running():
@@ -267,6 +290,7 @@ class MediaMTXManager:
             if not binary:
                 self.last_error = "缺少 MediaMTX 可执行文件（可设置 mediamtxPath 或联网自动下载）"
                 return False, self.last_error
+            self._cleanup_stale()
             if not port_free(self.rtsp_port):
                 owner = port_owner_pid(self.rtsp_port)
                 suffix = f"（进程 {owner}）" if owner else ""

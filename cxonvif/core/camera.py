@@ -26,7 +26,7 @@ from ..onvif.profiles import resolve_profile, topic_map
 from ..onvif.service import ONVIFService
 from ..stream.frames import FrameSource
 from ..stream.overlay_stream import OverlayStream
-from ..util import local_ip, now_iso, slugify
+from ..util import local_ip, now_iso, port_free, slugify
 
 
 class VirtualCamera:
@@ -250,14 +250,29 @@ class VirtualCamera:
 
     # ------------------------------------------------------------------ ONVIF
     def _start_onvif(self) -> bool:
-        from werkzeug.serving import make_server
+        from werkzeug.serving import ThreadedWSGIServer
 
         self.onvif_service = ONVIFService(self, self.profile)
         try:
             app = self.onvif_service.create_app()
             bind = self.manager.settings.get("bind", "0.0.0.0") or "0.0.0.0"
-            server = make_server(bind, self.onvif_port, app, threaded=True)
-            server.daemon_threads = True
+            if not port_free(self.onvif_port, bind):
+                self.last_error = (
+                    f"ONVIF 端口 {self.onvif_port} 不可用（被占用或位于系统保留端口段），请更换端口"
+                )
+                warn(f"[{self.name}] {self.last_error}", "onvif")
+                return False
+
+            class _OnvifServer(ThreadedWSGIServer):
+                allow_reuse_address = False
+                daemon_threads = True
+
+            # Werkzeug 在端口绑定失败时会直接 sys.exit(1)，必须捕获，避免拖垮整个引擎
+            server = _OnvifServer(bind, self.onvif_port, app)
+        except SystemExit:
+            self.last_error = f"ONVIF 端口 {self.onvif_port} 启动失败（端口被占用或被系统保留）"
+            warn(f"[{self.name}] {self.last_error}", "onvif")
+            return False
         except OSError as exc:
             self.last_error = f"ONVIF 端口 {self.onvif_port} 启动失败：{exc}"
             warn(f"[{self.name}] {self.last_error}", "onvif")

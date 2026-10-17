@@ -16,7 +16,7 @@ from typing import Any, get_type_hints
 
 from . import security
 from .paths import CONFIG_FILE, PROJECT_ROOT
-from .util import atomic_write_json, new_uuid, read_json, slugify
+from .util import atomic_write_json, new_uuid, port_free, read_json, slugify
 from .version import CONFIG_SCHEMA_VERSION
 
 
@@ -539,7 +539,8 @@ class ConfigStore:
         used = {c.onvif.port for c in self.config.cameras if c.id != exclude_id and c.onvif.port}
         settings = self.config.settings
         port = int(settings.get("onvifPortStart") or 8001)
-        while port in used:
+        # 跳过已被占用或位于 Windows 保留端口段（Hyper-V/WSL）的端口
+        while port <= 65535 and (port in used or not port_free(port)):
             port += 1
         return port
 
