@@ -926,7 +926,7 @@ class ONVIFService:
         return Response(soap_response, mimetype='application/soap+xml')
 
     def _handle_get_stream_uri(self, local_ip):
-        """Handle GetStreamUri request"""
+        """Handle GetStreamUri request（RTSP 认证开启时把凭据写入 URI）"""
         # Parse the SOAP request to determine which profile is being requested
         soap_body = request.data.decode('utf-8')
         
@@ -934,6 +934,16 @@ class ONVIFService:
         stream_path = f"{self.camera.path_name}_main"  # Default to main stream
         if f'subStream_{self.camera.id}' in soap_body or 'subStream' in soap_body:
             stream_path = f"{self.camera.path_name}_sub"
+
+        credentials = ""
+        settings = getattr(self.camera.manager, "settings", {}) or {}
+        if settings.get("rtspAuthEnabled"):
+            from urllib.parse import quote as _quote
+
+            user = _quote(str(settings.get("rtspUsername", "") or ""), safe="")
+            password = _quote(str(settings.get("rtspPassword", "") or ""), safe="")
+            if user:
+                credentials = f"{user}:{password}@" if password else f"{user}@"
         
         soap_response = f"""<?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://www.w3.org/2003/05/soap-envelope"
@@ -942,7 +952,7 @@ class ONVIFService:
     <SOAP-ENV:Body>
         <trt:GetStreamUriResponse>
             <trt:MediaUri>
-                <tt:Uri>rtsp://{local_ip}:{self.camera.rtsp_port}/{stream_path}</tt:Uri>
+                <tt:Uri>rtsp://{credentials}{local_ip}:{self.camera.rtsp_port}/{stream_path}</tt:Uri>
                 <tt:InvalidAfterConnect>false</tt:InvalidAfterConnect>
                 <tt:InvalidAfterReboot>false</tt:InvalidAfterReboot>
                 <tt:Timeout>PT60S</tt:Timeout>

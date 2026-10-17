@@ -70,6 +70,9 @@ pip install onnxruntime-openvino
 ```
 
 > 同一时间只能安装一个 `onnxruntime*` 包；切换时先卸载已有的。
+>
+> 建议使用 **Python 3.10–3.13**：截至发布时，部分推理运行时（onnxruntime / openvino）
+> 尚未提供 Python 3.14 的预编译轮子，装不上时可改用 3.12 创建虚拟环境。
 
 ### OpenVINO（Intel 最佳）
 
