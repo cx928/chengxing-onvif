@@ -15,11 +15,11 @@
 
 | 方式 | 适用 | 文件 |
 | --- | --- | --- |
-| **MSI 安装包** | Windows 10/11 x64，推荐 | `ChengXing-ONVIF-1.0.0-x64.msi` |
-| **便携 ZIP** | 免安装、U 盘携带 | `ChengXing-ONVIF-1.0.0-portable-win-x64.zip` |
+| **MSI 安装包** | Windows 10/11 x64，推荐 | [ChengXing-ONVIF-1.0.0-x64.msi](https://github.com/cx928/chengxing-onvif/releases/download/v1.0.0/ChengXing-ONVIF-1.0.0-x64.msi)（212 MB） |
+| **便携 ZIP** | 免安装、U 盘携带 | [ChengXing-ONVIF-1.0.0-portable-win-x64.zip](https://github.com/cx928/chengxing-onvif/releases/download/v1.0.0/ChengXing-ONVIF-1.0.0-portable-win-x64.zip)（255 MB） |
 | **源码** | 开发 / 自定义 | `git clone` + `install.ps1` |
 
-前往 [Releases](https://github.com/cx928/chengxing-onvif/releases) 下载。
+全部版本见 [Releases](https://github.com/cx928/chengxing-onvif/releases)，校验值见 [SHA256SUMS.txt](https://github.com/cx928/chengxing-onvif/releases/download/v1.0.0/SHA256SUMS.txt)。
 
 安装包已内置：**Python 3.12 运行时、FFmpeg、MediaMTX、ONNX Runtime、YOLO11n ONNX 模型、WinUI 3 桌面控制台**，
 无需单独安装 Python 或配置环境；默认以 ONNX 推理，装好即可检测人形/车辆。
